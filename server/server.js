@@ -19,14 +19,28 @@ io.on("connection", (socket) => {
 
     const room = rooms.get(roomName);
 
-    console.log("Salas: ", rooms.size, "| Sala Actual: ", roomName);
+    const color = colors[room.users.size % colors.length];
+    console.log("Salas: ", rooms.size, "| Sala Actual: ", roomName, "| Usuarios: ", room.users.size, "| Color asignado: ", color);
     
-    const color = colors(rooms.size);
-    console.log(colors);
-    
+    room.users.set(socket.id, { username, color });
+    socket.join(roomName);
+    socket.data.roomName = roomName;
+    socket.data.username = username;
 
-    callback({ ok: true });
-});
+    const dataCallback = Array.from(room.users.values());
+
+    io.to(roomName).emit("room_users", dataCallback)
+
+    callback({ 
+      ok: true,
+      usuarios: dataCallback,
+      color: color,
+      trazos: room.trazos
+    });
+  });
+  socket.on("disconnect", () => {
+    const socket = socket.id;
+  });
 });
 
 console.log("Servidor escuchando en el puerto 3000");

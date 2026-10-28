@@ -10,3 +10,5 @@ app.use(router)
 app.mount('#app')
 
 socket.emit("join_room", { roomName: "test", username: "yo" }, (res) => console.log(res));
+
+socket.on("room_users", (lista) => console.log("room_users:", lista));
