@@ -144,34 +144,56 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <h2>Sala: {{ route.params.roomName }}</h2>
-  <input type="color" v-model="color" />
-  <input type="range" min="1" max="20" v-model="grosor" />
-  <button @click="pedirLimpiar">Reiniciar lienzo</button>
-<div class="lienzo">
-  <canvas
-    ref="canvas"
-    @pointerdown="empezar"
-    @pointermove="mover"
-    @pointerup="terminar"
-    @pointerleave="salir"
-  ></canvas>
+  <main class="container">
+    <header class="cabecera">
+      <h2>🎨 Sala: {{ route.params.roomName }}</h2>
+      <div class="herramientas">
+        <label>Color <input type="color" v-model="color" /></label>
+        <label>Grosor <input type="range" min="1" max="20" v-model="grosor" /></label>
+        <button class="secondary outline" @click="pedirLimpiar">Reiniciar lienzo</button>
+      </div>
+    </header>
 
-  <div
-    v-for="(c, id) in cursores"
-    :key="id"
-    class="cursor"
-    :style="{ left: c.x * 100 + '%', top: c.y * 100 + '%' }"
-  >
-    <span class="punto" :style="{ background: c.color }"></span>
-    <span class="nombre" :style="{ color: c.color }">{{ c.username }}</span>
-  </div>
-</div>
+    <div class="lienzo">
+      <canvas
+        ref="canvas"
+        @pointerdown="empezar"
+        @pointermove="mover"
+        @pointerup="terminar"
+        @pointerleave="salir"
+      ></canvas>
+
+      <div
+        v-for="(c, id) in cursores"
+        :key="id"
+        class="cursor"
+        :style="{ left: c.x * 100 + '%', top: c.y * 100 + '%' }"
+      >
+        <span class="punto" :style="{ background: c.color }"></span>
+        <span class="nombre" :style="{ color: c.color }">{{ c.username }}</span>
+      </div>
+    </div>
+  </main>
 </template>
 
 <style scoped>
-.lienzo { position: relative; display: inline-block; }
-canvas { display: block; border: 1px solid #000; touch-action: none; }
+.cabecera { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.5rem 0 1rem; }
+.cabecera h2 { margin: 0; }
+.herramientas { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; }
+.herramientas label { display: flex; align-items: center; gap: .5rem; margin: 0; }
+.herramientas input { margin: 0; }
+.herramientas input[type="color"] { width: 2.75rem; height: 2.25rem; padding: .15rem; }
+.herramientas input[type="range"] { width: 8rem; }
+.herramientas button { margin: 0; padding: .4rem .9rem; }
+
+.lienzo { position: relative; }
+/* El lienzo es una "hoja" blanca en claro y en oscuro (se dibuja en negro por defecto).
+   Se escala con CSS: las coordenadas que se envían son relativas (0-1). */
+canvas {
+  display: block; width: 100%; height: auto; aspect-ratio: 8 / 5;
+  background: #fff; border-radius: var(--pico-border-radius);
+  box-shadow: var(--pico-card-box-shadow); touch-action: none; cursor: crosshair;
+}
 .cursor {
   position: absolute;
   pointer-events: none;

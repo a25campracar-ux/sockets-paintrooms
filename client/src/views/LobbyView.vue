@@ -25,11 +25,23 @@ function entrar() {
 </script>
 
 <template>
-  <h1>PaintRooms</h1>
-  <form @submit.prevent="entrar">
-    <input v-model="username" placeholder="Tu nombre" maxlength="30" />
-    <input v-model="roomName" placeholder="Nombre de la sala" maxlength="30" />
-    <button>Entrar</button>
-  </form>
-  <p v-if="error">{{ error }}</p>
+  <main class="container lobby">
+    <article>
+      <hgroup>
+        <h1>🎨 PaintRooms</h1>
+        <p>Dibuja en tiempo real con quien esté en tu misma sala.</p>
+      </hgroup>
+      <form @submit.prevent="entrar">
+        <input v-model="username" placeholder="Tu nombre" maxlength="30" aria-label="Tu nombre" />
+        <input v-model="roomName" placeholder="Nombre de la sala" maxlength="30" aria-label="Nombre de la sala" />
+        <button type="submit">Entrar</button>
+      </form>
+      <p v-if="error" class="error"><small>{{ error }}</small></p>
+    </article>
+  </main>
 </template>
+
+<style scoped>
+.lobby { max-width: 30rem; padding-top: 12vh; }
+.error { color: var(--pico-del-color); margin: 0; }
+</style>
