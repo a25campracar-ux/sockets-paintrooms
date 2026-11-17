@@ -1,4 +1,6 @@
-import '@picocss/pico'          // estilos base (claro/oscuro automático)
+import '@picocss/pico'                     // base de estilos
+import '@fontsource-variable/host-grotesk' // tipografía (autoalojada)
+import './assets/tema.css'                 // tema propio, siempre después de Pico
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'

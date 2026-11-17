@@ -7,7 +7,19 @@ import { estado } from "../estado.js";
 const route = useRoute();
 const router = useRouter();
 const canvas = ref(null);
-const color = ref("#000000");
+const color = ref("#111111");
+// Muestras de color (en lugar del selector nativo). El blanco hace de goma.
+const colores = [
+  { valor: "#111111", nombre: "Negro" },
+  { valor: "#e4486f", nombre: "Rosa" },
+  { valor: "#ff5100", nombre: "Naranja" },
+  { valor: "#f2c200", nombre: "Amarillo" },
+  { valor: "#206301", nombre: "Verde" },
+  { valor: "#008080", nombre: "Turquesa" },
+  { valor: "#4363d8", nombre: "Azul" },
+  { valor: "#911eb4", nombre: "Lila" },
+  { valor: "#ffffff", nombre: "Goma (blanco)" },
+];
 const grosor = ref(4);
 
 let ctx = null;
@@ -144,64 +156,92 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <main class="container">
-    <header class="cabecera">
-      <h2>🎨 Sala: {{ route.params.roomName }}</h2>
-      <div class="herramientas">
-        <label>Color <input type="color" v-model="color" /></label>
-        <label>Grosor <input type="range" min="1" max="20" v-model="grosor" /></label>
+  <section class="sala">
+    <header class="sala__cap">
+      <div>
+        <p class="etiqueta">Sala</p>
+        <h1 class="sala__titol">{{ route.params.roomName }}</h1>
+      </div>
+
+      <!-- Herramientas -->
+      <div class="eines">
+        <fieldset class="mostres">
+          <legend class="etiqueta">Color</legend>
+          <label v-for="c in colores" :key="c.valor" class="mostra" :title="c.nombre">
+            <input type="radio" name="color" :value="c.valor" v-model="color" :aria-label="c.nombre" />
+            <span :style="{ background: c.valor }"></span>
+          </label>
+        </fieldset>
+        <label class="gruix">
+          <span class="etiqueta">Grosor <span class="xifra">{{ grosor }} px</span></span>
+          <input type="range" min="1" max="20" v-model="grosor" />
+        </label>
         <button class="secondary outline" @click="pedirLimpiar">Reiniciar lienzo</button>
       </div>
     </header>
 
-    <div class="lienzo">
-      <canvas
-        ref="canvas"
-        @pointerdown="empezar"
-        @pointermove="mover"
-        @pointerup="terminar"
-        @pointerleave="salir"
-      ></canvas>
+    <div class="llum">
+      <div class="finestra">
+        <div class="finestra__barra" aria-hidden="true">
+          <span class="finestra__punts"><span></span><span></span><span></span></span>
+          <span class="finestra__adreca">paintrooms / sala / {{ route.params.roomName }}</span>
+        </div>
+        <div class="finestra__cos lienzo-marco">
+          <div class="lienzo">
+            <canvas
+              ref="canvas"
+              @pointerdown="empezar"
+              @pointermove="mover"
+              @pointerup="terminar"
+              @pointerleave="salir"
+            ></canvas>
 
-      <div
-        v-for="(c, id) in cursores"
-        :key="id"
-        class="cursor"
-        :style="{ left: c.x * 100 + '%', top: c.y * 100 + '%' }"
-      >
-        <span class="punto" :style="{ background: c.color }"></span>
-        <span class="nombre" :style="{ color: c.color }">{{ c.username }}</span>
+            <div
+              v-for="(c, id) in cursores"
+              :key="id"
+              class="cursor"
+              :style="{ left: c.x * 100 + '%', top: c.y * 100 + '%' }"
+            >
+              <span class="punto" :style="{ background: c.color }"></span>
+              <span class="nombre">{{ c.username }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </main>
+  </section>
 </template>
 
 <style scoped>
-.cabecera { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.5rem 0 1rem; }
-.cabecera h2 { margin: 0; }
-.herramientas { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; }
-.herramientas label { display: flex; align-items: center; gap: .5rem; margin: 0; }
-.herramientas input { margin: 0; }
-.herramientas input[type="color"] { width: 2.75rem; height: 2.25rem; padding: .15rem; }
-.herramientas input[type="range"] { width: 8rem; }
-.herramientas button { margin: 0; padding: .4rem .9rem; }
+.sala { padding-block: clamp(2.5rem, 2rem + 3vw, 5rem) clamp(3rem, 2.5rem + 2vw, 5.3rem); }
+.sala__cap { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1.5rem 3rem; margin-bottom: 2.5rem; }
+.sala__titol { font-size: clamp(2.5rem, 2rem + 2.5vw, 3.75rem); line-height: 1; letter-spacing: -0.035em; margin: 0.4rem 0 0; overflow-wrap: anywhere; }
 
-.lienzo { position: relative; }
-/* El lienzo es una "hoja" blanca en claro y en oscuro (se dibuja en negro por defecto).
-   Se escala con CSS: las coordenadas que se envían son relativas (0-1). */
-canvas {
-  display: block; width: 100%; height: auto; aspect-ratio: 8 / 5;
-  background: #fff; border-radius: var(--pico-border-radius);
-  box-shadow: var(--pico-card-box-shadow); touch-action: none; cursor: crosshair;
-}
-.cursor {
-  position: absolute;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transform: translate(-5px, -5px);
-}
-.punto { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #fff; }
-.nombre { font: bold 12px sans-serif; }
+.eines { display: flex; flex-wrap: nowrap; align-items: end; gap: 1.5rem 2rem; }
+.eines button { margin: 0; }
+.mostres { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; border: 0; }
+.mostres legend { width: 100%; margin-bottom: 0.5rem; padding: 0; }
+.mostra { position: relative; margin: 0; cursor: pointer; }
+.mostra input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.mostra span { display: block; width: 1.9rem; height: 1.9rem; border: 1px solid rgb(255 255 255 / 0.18); }
+.mostra input:checked + span { outline: 2px solid var(--text); outline-offset: 2px; }
+.mostra input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.gruix { display: flex; flex-direction: column; gap: 0.5rem; margin: 0; min-width: 11rem; }
+.gruix .xifra { color: var(--text); margin-left: 0.35rem; letter-spacing: 0; text-transform: none; }
+/* Control de rango dibujado por el tema (no el nativo) */
+.gruix input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 2px; margin: 0.75rem 0; background: var(--linia-forta); }
+.gruix input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: var(--text); border: 0; border-radius: 0; cursor: pointer; }
+.gruix input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; background: var(--text); border: 0; border-radius: 0; cursor: pointer; }
+.gruix input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+
+.lienzo-marco { padding: clamp(0.75rem, 2vw, 1.25rem); background: #0e0e11; }
+/* Que la hoja quepa en la pantalla: el ancho sale del alto disponible (proporción 8:5) */
+.lienzo { position: relative; max-width: calc((100dvh - 22rem) * 1.6); min-width: min(100%, 36rem); margin-inline: auto; }
+/* La hoja es blanca (se dibuja en negro por defecto). Las coordenadas que se envían son relativas (0-1). */
+canvas { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; background: #fff; touch-action: none; cursor: crosshair; }
+.cursor { position: absolute; pointer-events: none; display: flex; align-items: center; gap: 6px; transform: translate(-6px, -6px); }
+.punto { width: 12px; height: 12px; border: 2px solid #fff; box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25); }
+.nombre { font-size: 12px; font-weight: 600; color: #fff; padding: 2px 6px; background: rgb(10 10 12 / 0.88); }
+@media (max-width: 1100px) { .eines { flex-wrap: wrap; } }
 </style>

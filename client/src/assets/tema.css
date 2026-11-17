@@ -1,0 +1,155 @@
+/* ============================================================
+   Tema comú (Time Attack · PaintRooms · Cursores en vivo) — còpia del de Time Attack
+   Fosc, cantonades rectes, Host Grotesk, targetes elevades.
+   El vermell (#c8303a) només és una llum darrere del contingut
+   i el focus del teclat: botons, panells i text queden neutres.
+   S'importa DESPRÉS de Pico per sobreescriure les seves variables.
+   ============================================================ */
+
+:root,
+[data-theme='dark'] {
+  /* Tokens */
+  --fons: #0a0a0c;
+  --superficie: #121315;
+  --superficie-2: #16161a;
+  --linia: #222325;
+  --linia-forta: #34353a;
+  --text: #faf8f9;
+  --text-2: #e5e5e4;
+  --text-3: #b4b4b8; /* 8,9:1 sobre --fons i 7,9:1 sobre --superficie */
+  --accent: #c8303a;
+  --boto: #16161a;
+  --boto-hover: #202026;
+  --boto-text: #fcfcfd;
+
+  /* Pico → tokens */
+  color-scheme: dark;
+  --pico-font-family: 'Host Grotesk Variable', system-ui, sans-serif;
+  --pico-font-size: 100%;
+  --pico-line-height: 1.55;
+  --pico-border-radius: 0;
+  --pico-background-color: var(--fons);
+  --pico-color: var(--text-2);
+  --pico-h1-color: var(--text);
+  --pico-h2-color: var(--text);
+  --pico-h3-color: var(--text);
+  --pico-muted-color: var(--text-3);
+  --pico-muted-border-color: var(--linia);
+  --pico-card-background-color: var(--superficie);
+  --pico-card-sectioning-background-color: var(--superficie);
+  --pico-card-box-shadow: none;
+  --pico-primary: var(--text);
+  --pico-primary-hover: #fff;
+  --pico-primary-underline: rgb(250 248 249 / 0.4);
+  --pico-primary-background: var(--boto);
+  --pico-primary-border: var(--linia-forta);
+  --pico-primary-hover-background: var(--boto-hover);
+  --pico-primary-hover-border: #4a4b51;
+  --pico-primary-inverse: var(--boto-text);
+  --pico-primary-focus: rgb(200 48 58 / 0.55);
+  --pico-secondary: var(--text-3);
+  --pico-secondary-hover: var(--text);
+  --pico-secondary-border: var(--linia-forta);
+  --pico-secondary-hover-border: #4a4b51;
+  --pico-secondary-focus: rgb(200 48 58 / 0.55);
+  --pico-form-element-background-color: #0e0e11;
+  --pico-form-element-border-color: var(--linia-forta);
+  --pico-form-element-active-border-color: #6b6c73;
+  --pico-form-element-focus-color: rgb(200 48 58 / 0.55);
+  --pico-form-element-placeholder-color: #8b8b92;
+  --pico-table-border-color: var(--linia);
+  --pico-table-row-stripped-background-color: transparent;
+  --pico-outline-width: 2px;
+}
+
+html { background: var(--fons); }
+body { min-height: 100dvh; -webkit-font-smoothing: antialiased; }
+::selection { background: var(--accent); color: #fff; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Amplada: àmplia, mateix marge als dos costats */
+.container { max-width: 1376px; padding-inline: 24px; }
+
+/* ---------- Tipografia: una sola família, pocs tamanys ---------- */
+h1, h2, h3 { font-weight: 500; letter-spacing: -0.025em; }
+.titular span { display: block; }
+.titular {
+  font-size: clamp(3.5rem, 2.6rem + 3.6vw, 4.625rem); /* 56px → 74px */
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  margin: 0 0 1.5rem;
+  text-wrap: balance;
+}
+.entradeta { font-size: 1.125rem; color: var(--text-2); max-width: 34rem; margin: 0; text-wrap: pretty; }
+.etiqueta {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-3); margin: 0;
+}
+.xifra { font-variant-numeric: tabular-nums; }
+
+/* ---------- Capçalera: fila de marca ---------- */
+.capcalera { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1.25rem; }
+.marca { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--text); font-weight: 600; text-decoration: none; letter-spacing: -0.01em; }
+.marca__signe { width: 0.7rem; height: 0.7rem; background: var(--text); box-shadow: 0 0 18px 2px rgb(200 48 58 / 0.7); }
+.capcalera__info { color: var(--text-3); font-size: 0.875rem; margin: 0; }
+.capcalera__info strong { color: var(--text); font-weight: 500; }
+
+/* ---------- Botons: quadrats i neutres ---------- */
+button, [role='button'], input[type='submit'] { font-weight: 500; letter-spacing: 0.01em; white-space: nowrap; }
+button:not(:disabled):active { transform: translateY(1px); }
+
+/* ---------- Targetes elevades (llum des de dalt) ---------- */
+article, .targeta {
+  background: var(--superficie);
+  border: 1px solid var(--linia);
+  border-top-color: var(--linia-forta);
+  box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.9), inset 0 1px 0 rgb(255 255 255 / 0.03);
+  padding: 1.75rem;
+  margin: 0;
+}
+
+/* ---------- Llum vermella darrere del contingut ---------- */
+.llum { position: relative; isolation: isolate; }
+.llum::before {
+  content: '';
+  position: absolute;
+  inset: -12% -8%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(200 48 58 / 0.7), rgb(200 48 58 / 0.25) 55%, transparent);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+/* ---------- Marc de navegador per al producte ---------- */
+.finestra { background: var(--superficie); border: 1px solid var(--linia); border-top-color: var(--linia-forta);
+  box-shadow: 0 40px 80px -30px rgb(0 0 0 / 0.95); }
+.finestra__barra {
+  display: flex; align-items: center; gap: 0.75rem; height: 2.5rem; padding: 0 0.9rem;
+  border-bottom: 1px solid var(--linia); background: #0f1012;
+}
+.finestra__punts { display: flex; gap: 6px; }
+.finestra__punts span { width: 9px; height: 9px; background: #2c2d31; }
+.finestra__adreca {
+  flex: 1; max-width: 28rem; margin-inline: auto; padding: 0.2rem 0.75rem;
+  background: #0a0a0c; border: 1px solid var(--linia); color: var(--text-3);
+  font-size: 0.8125rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.finestra__cos { padding: clamp(1.25rem, 3vw, 2.5rem); }
+
+/* ---------- Taules ---------- */
+table { margin: 0; }
+th { color: var(--text-3); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+td { color: var(--text-2); }
+th, td { background: transparent; padding-inline: 0.75rem; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---------- Formularis ---------- */
+label { color: var(--text-2); font-size: 0.875rem; }
+input:not([type='checkbox'], [type='radio'], [type='range'], [type='color']) { font-size: 1rem; }
+
+/* ---------- Espai entre blocs ---------- */
+.bloc { padding-block: clamp(4rem, 3rem + 4vw, 8rem) clamp(3rem, 2.5rem + 2vw, 5.3rem); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
