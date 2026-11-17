@@ -1,7 +1,9 @@
 import { Server } from "socket.io";
 
-const io = new Server(3000, {
-  cors: { origin: "http://localhost:5173" }
+// PORT y CORS_ORIGIN vienen del entorno (pm2 en el servidor); en local, los de Vite
+const PORT = Number(process.env.PORT) || 3000;
+const io = new Server(PORT, {
+  cors: { origin: process.env.CORS_ORIGIN || "http://localhost:5173" }
 });
 
 const rooms = new Map();
